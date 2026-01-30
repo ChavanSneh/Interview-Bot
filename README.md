@@ -35,7 +35,7 @@ A professional tool designed to help candidates perfect their interview response
    Ceate a folder .streamlit/ and a file called secrets.toml inside it
 
    ```
-   OPENAI_API_KEY =
+   GEMINI_API_KEY =
    "your_openai_api_key_here"
    ```
 

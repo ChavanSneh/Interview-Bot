@@ -45,7 +45,7 @@ if st.button("🚀 Analyze My Answer"):
     else:
         with st.spinner("Gemini is analyzing your performance..."):
             try:
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                model = genai.GenerativeModel('gemini-3-pro-preview')
                 
                 # PERSONA PROMPT
                 system_instruction = f"""

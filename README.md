@@ -36,7 +36,7 @@ A professional tool designed to help candidates perfect their interview response
 
    ```
    GEMINI_API_KEY =
-   "your_openai_api_key_here"
+   "your_gemini_api_key_here"
    ```
 
 

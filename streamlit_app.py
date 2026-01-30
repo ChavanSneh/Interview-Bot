@@ -78,6 +78,7 @@ if st.button("🚀 Analyze My Answer"):
                 st.divider()
                 st.subheader("📋 Evaluation Result")
                 st.markdown(response.text)
+                st.caption("Powered by Gemini-3 Flash | Latency: Optimised")
                 
                 # Feedback features
                 play_completion_beep()

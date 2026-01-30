@@ -8,8 +8,8 @@ st.markdown("---")
 
 # 2. SECURE API KEY ACCESS
 # This looks for the key in your .streamlit/secrets.toml file or Streamlit Cloud Secrets
-if "OPENAI_API_KEY" in st.secrets:
-    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+if "GEMINI_API_KEY" in st.secrets:
+    client = OpenAI(api_key=st.secrets["GEMINI_API_KEY"])
 else:
     st.error("❌ Missing API Key! Please add it to your Streamlit Secrets.")
     st.stop()

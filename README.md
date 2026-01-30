@@ -1,23 +1,29 @@
-# 🎯 AI Interview Answer Reviewer
+# 🎯 AI Interview Answer Reviewer (Multimodal Edition)
 
-A professional tool designed to help candidates perfect their interview responses. This application uses **OpenAI's GPT-4o** to analyze answers and **Whisper** to transcribe voice responses, providing structured feedback and scoring.
+A sophisticated interview preparation tool built with **Streamlit** and **Google Gemini 1.5 Flash**. This application allows users to practice interview questions through either text or voice, providing instant, high-fidelity feedback using native multimodal AI processing.
 
 ## 🚀 Live Demo
-[Link to your Streamlit App (e.g., https://your-app.streamlit.app)]
+[Insert your Streamlit Cloud Link Here]
 
 ## ✨ Key Features
-* **Dual-Mode Input:** Users can either type their responses or speak them directly via microphone.
-* **Speech-to-Text Integration:** Uses OpenAI's `whisper-1` model for high-accuracy voice transcription.
-* **Structured AI Evaluation:** Provides a 1-10 score, highlights strengths, identifies missing points, and suggests specific improvements.
-* **Audible Feedback:** Features an automated audio notification (Beep) upon completion of the review.
+* **Multimodal Input:** Native support for both text-based responses and direct audio recordings.
+* **Direct Audio Intelligence:** Unlike traditional pipelines that require a separate Speech-to-Text model (like Whisper), this app leverages **Gemini 1.5 Flash's native audio-processing** capabilities to analyze tone and content directly.
+* **Expert Personas:** The AI is prompted as a professional Hiring Manager to provide realistic scoring and critique.
+* **Automated Feedback Loop:** Provides a structured 4-point evaluation:
+    1. Numerical Score (1-10)
+    2. Strengths Analysis
+    3. Gap Identification
+    4. "Model Answer" Suggestions
+* **Audible Alerts:** Integrated browser-based audio notifications to signal task completion.
 
 ## 🛠️ Tech Stack
-* **Frontend:** [Streamlit](https://streamlit.io/) (Python-based web framework)
-* **AI Engine:** OpenAI GPT-4o (for evaluation logic)
-* **Voice Processing:** OpenAI Whisper (for speech-to-text)
-* **Security:** Streamlit Secrets Management (for API key protection)
+* **Frontend:** Streamlit
+* **AI Engine:** Google Generative AI (Gemini 1.5 Flash)
+* **Environment:** Python 3.9+
+* **Security:** Streamlit Secrets Management (`secrets.toml`)
 
-## ⚙️ Local Setup
+## ⚙️ Installation & Setup
+
 1. **Clone the repository:**
    ```bash
    git clone [https://github.com/chavansneh/ai-interview-reviewer.git](https://github.com/chavansneh/ai-interview-reviewer.git)

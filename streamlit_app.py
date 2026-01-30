@@ -1,72 +1,87 @@
 import streamlit as st
-from openai import OpenAI
+import google.generativeai as genai
 
-# 1. SETUP & APP NAME
-st.set_page_config(page_title="AI Interview Answer Reviewer", page_icon="🎯")
+# 1. SETUP & APP CONFIG
+st.set_page_config(page_title="AI Interview Reviewer", page_icon="🎯")
 st.title("🎯 AI Interview Answer Reviewer")
 st.markdown("---")
 
 # 2. SECURE API KEY ACCESS
-# This looks for the key in your .streamlit/secrets.toml file or Streamlit Cloud Secrets
+# Make sure you have 'GEMINI_API_KEY' in your Streamlit Secrets!
 if "GEMINI_API_KEY" in st.secrets:
-    client = OpenAI(api_key=st.secrets["GEMINI_API_KEY"])
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 else:
-    st.error("❌ Missing API Key! Please add it to your Streamlit Secrets.")
+    st.error("❌ Missing Gemini API Key! Please add it to your Streamlit Secrets.")
     st.stop()
 
-# 3. HELPER FUNCTION: THE "BEEP" ALERT
+# 3. HELPER: PLAY COMPLETION BEEP
 def play_completion_beep():
-    # This plays a professional 'ding' sound when the review is ready
+    # A professional 'ding' sound to alert the user
     sound_url = "https://www.soundjay.com/buttons/beep-01a.mp3"
     st.markdown(f'<audio autoplay><source src="{sound_url}" type="audio/mp3"></audio>', unsafe_allow_html=True)
 
-# 4. USER INPUTS (Text & Voice)
-st.subheader("Step 1: Provide the Question")
-question = st.text_input("What is the interview question?", placeholder="e.g., Why do you want this internship?")
+# 4. USER INPUTS
+st.subheader("Step 1: The Question")
+question = st.text_input("What interview question are you practicing?", placeholder="e.g., Tell me about a time you solved a difficult problem.")
 
-st.subheader("Step 2: Provide Your Answer")
-tab1, tab2 = st.tabs(["✍️ Type Answer", "🎙️ Record Answer"])
+st.subheader("Step 2: Your Answer")
+tab1, tab2 = st.tabs(["✍️ Type Your Answer", "🎙️ Speak Your Answer"])
 
 with tab1:
-    text_answer = st.text_area("Your Response", placeholder="Type your answer here...", height=150)
+    text_answer = st.text_area("Type your response here...", height=150)
 
 with tab2:
-    # This is the 'Ear' of your app!
-    audio_data = st.audio_input("Click to record your voice")
-    voice_answer = ""
-    if audio_data:
-        with st.spinner("Transcribing your voice..."):
-            transcript = client.audio.transcriptions.create(model="whisper-1", file=audio_data)
-            voice_answer = transcript.text
-            st.success(f"Transcribed: {voice_answer}")
+    # This is the 'Ear' of the app
+    audio_file = st.audio_input("Record your answer (Native Gemini Audio Processing)")
 
-# Decide which answer to use (Voice takes priority if recorded)
-final_answer = voice_answer if voice_answer else text_answer
-
-# 5. THE AI REVIEWER LOGIC
-if st.button("🚀 Review My Answer"):
-    if not question or not final_answer:
-        st.warning("⚠️ Please provide both a question and an answer (typed or spoken).")
+# 5. THE REVIEW LOGIC
+if st.button("🚀 Analyze My Answer"):
+    # Check if we have a question
+    if not question:
+        st.warning("⚠️ Please provide an interview question first.")
+    # Check if we have either a text or audio answer
+    elif not text_answer and not audio_file:
+        st.warning("⚠️ Please either type or record an answer.")
     else:
-        with st.spinner("Hiring Manager is analyzing..."):
+        with st.spinner("Gemini is analyzing your performance..."):
             try:
-                response = client.chat.completions.create(
-                    model="gpt-4o", 
-                    messages=[
-                        {"role": "system", "content": "You are a professional hiring manager. Analyze the user's interview answer. Provide: 1. Score (/10), 2. What's good, 3. What's missing, 4. How to improve."},
-                        {"role": "user", "content": f"Question: {question}\nAnswer: {final_answer}"}
-                    ]
-                )
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                # Show Result
-                result = response.choices[0].message.content
+                # PERSONA PROMPT
+                system_instruction = f"""
+                You are a professional hiring manager. 
+                Question: {question}
+                
+                Analyze the user's provided answer. 
+                If the input is audio, listen for tone, clarity, and content.
+                If the input is text, focus on structure and keywords.
+                
+                Provide:
+                1. Score: (out of 10)
+                2. What's good:
+                3. What's missing:
+                4. How to improve: (Give a better sample answer)
+                """
+
+                # EXECUTE BASED ON INPUT TYPE
+                if audio_file:
+                    # Multimodal path: Audio + Text
+                    response = model.generate_content([
+                        system_instruction,
+                        {"mime_type": "audio/wav", "data": audio_file.read()}
+                    ])
+                else:
+                    # Text only path
+                    response = model.generate_content(f"{system_instruction}\n\nUser's Text Answer: {text_answer}")
+
+                # 6. SHOW RESULTS
                 st.divider()
                 st.subheader("📋 Evaluation Result")
-                st.markdown(result)
+                st.markdown(response.text)
                 
-                # Trigger the 'Found My Phone' style beep
+                # Feedback features
                 play_completion_beep()
-                st.toast("Review Complete!", icon="✅")
+                st.toast("Analysis Complete!", icon="✅")
                 
             except Exception as e:
                 st.error(f"An error occurred: {e}")

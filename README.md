@@ -28,7 +28,7 @@ A professional tool designed to help candidates perfect their interview response
 2. Install the requirements
 
    ```
-   $ pip install -r requirements.txt
+   pip install -r requirements.txt
    ```
 
 3. Configure Secrets:
